@@ -1,8 +1,9 @@
 import time
-import page
-from playwright.sync_api import sync_playwright, expect
+import pytest
 
-def test_logo_visible():
+from playwright.sync_api import Page, expect, sync_playwright
+
+def test_pricefx():
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="chrome",headless=False)
 
@@ -27,16 +28,10 @@ def test_logo_visible():
         page.locator("span:has-text('New Quote')").click()
         page.locator("a:has-text('SampleQuote')").click()
         time.sleep(3)
-        date_field = page.locator("div[data-test='effective-date-field'] input")
-        date_field.evaluate("""
-            el => {
-                el.removeAttribute('readonly');
-                el.value = '01/01/2026';
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        """)
-        expect(date_field).to_have_value("01/01/2026")
+        page.locator("[data-test=\"targetdate-input\"]").click()
+        page.get_by_role("button", name="2026").click()
+        page.get_by_text("2025").click()
+        page.get_by_text("1").first.click()
         page.locator("[data-test='customer-select-addon']").click()
         ##time.sleep(3)
         customer_search = page.locator("[data-test='quick-filter-Customer-Name-input'] input.ant-input")
@@ -49,11 +44,20 @@ def test_logo_visible():
         ##time.sleep(1)
         page.locator("text=Biggest").first.click()
         ##time.sleep(1)
-        page.locator("span:has-text('Items')").click()
-        page.locator("button[aria-label='Add Items'] span[role='img'] svg").click()
-        ##time.sleep(1)
-        page.locator("input[placeholder='Search']").fill("Meatball BM")
-        time.sleep(1)
-        page.locator("span.ucMenuItemContent__anchor").click()
-        time.sleep(15)
-        browser.close()  # Explicit cleanup
+        page.locator("[data-test=\"Q-detail-tab--items\"]").click()
+        page.locator("[data-test=\"sfdc-import-add-items-button\"]").click()
+        page.get_by_role("button", name="Meatball Bl MB-").click()
+        page.get_by_role("row", name="Press SHIFT+SPACE to select").locator("input[type='checkbox']").click()
+        page.locator("[data-test=\"productdiscountpercent-input\"]").click()
+        page.locator("[data-test=\"productdiscountpercent-input\"]").fill("15")
+        page.locator("[data-test=\"priceshop-recalculate-button\"]").click()
+        page.locator("[data-test=\"common-submit-button\"]").click()
+        page.locator(
+            "[data-test=\"unity-quote-submitconfirmation-modal\"] [data-test=\"common-submit-button\"]").click()
+        page.locator("[data-test=\"Q-detail-tab--workflow\"]").click()
+        page.locator(
+            ".ucButton.ucButton--hasIcon.ucButton--iconOnly.ucButton--iconOnlyColor-green > .ucButton__inner").click()
+        page.get_by_role("textbox", name="Reason for your decision").click()
+        page.get_by_role("textbox", name="Reason for your decision").fill("Test")
+        page.locator("[data-test=\"common-approve-button\"]").click()
+        browser.close()
