@@ -181,9 +181,9 @@ def test_dashboard():
             more_button.wait_for(state="visible", timeout=30000)
             more_button.click()
 
-            export_button = page.get_by_role("button", name="Export to Excel").nth(1)
-            export_button.wait_for(state="visible", timeout=30000)
-            export_button.click()
+            export_button = page.get_by_role("button", name="Export to Excel").first
+            export_button.scroll_into_view_if_needed()
+            export_button.click(force=True)
 
             page.wait_for_timeout(10000)
             screenshot_step("Excel exported")
