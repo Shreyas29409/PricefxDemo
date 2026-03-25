@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright, expect
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.description(
     "This test logs into Pricefx, creates a new quote, adds items, applies discounts, submits the quote, and approves it. Every validation is a separate step with screenshots. Waits are added to prevent timeout errors.")
-def test_work():
+def test_quoteapproval():
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="chrome", headless=False)
         page = browser.new_page()
