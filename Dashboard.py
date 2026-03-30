@@ -31,7 +31,7 @@ def test_dashboard():
         with allure.step("Fill in password"):
             password_input = page.locator("[data-test=\"password-input\"]")
             password_input.wait_for(state="visible", timeout=30000)
-            password_input.fill("Start123!")
+            password_input.fill("Shreyas@29409")
             screenshot_step("Password entered")
 
         # Step 4: Click login
